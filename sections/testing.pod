@@ -1,4 +1,4 @@
-=head2 Testing
+=head1 Testing
 
 Z<testing>
 
@@ -14,7 +14,7 @@ to do everything perfectly every time, let the computer handle the repetition.
 
 Perl 5 provides great tools to help you write good and useful automated tests.
 
-=head3 Test::More
+=head2 Test::More
 
 X<Test::More>
 X<ok()>
@@ -78,7 +78,7 @@ completed successfully--otherwise, how would you I<know>?
 
 =end sidebar
 
-=head3 Running Tests
+=head2 Running Tests
 
 Z<running_tests>
 
@@ -164,7 +164,7 @@ With those two changes, C<prove> now displays:
 
 =end screen
 
-=head3 Better Comparisons
+=head2 Better Comparisons
 
 Even though the heart of all automated testing is the boolean condition "is
 this true or false?", reducing everything to that boolean condition is tedious
@@ -201,7 +201,7 @@ As you might expect, the first test passes and the second fails:
 Where C<ok()> only provides the line number of the failing test, C<is()>
 displays the mismatched values.
 
-C<ok()> applies implicit scalar context to its values.  This means, for
+C<is()> applies implicit scalar context to its values.  This means, for
 example, that you can check the number of elements in an array without
 explicitly evaluating the array in scalar context:
 
@@ -290,7 +290,7 @@ more configurable tests.
 
 C<Test::More> has several more test functions, but these are the most useful.
 
-=head3 Organizing Tests
+=head2 Organizing Tests
 
 X<testing; .t files>
 X<testing; t/ directory>
@@ -326,18 +326,7 @@ want only to run the F<t/breathe_fire.t> test file.  When you have the feature
 working to your satisfaction, run the entire test suite to verify that local
 changes have no unintended global effects.
 
-=head3 Coverage Testing and Profiling
-
-=for author
-
-What do we have here, C<Devel::Cover>, C<Devel::NYTProfiler> (iirc),
-etc.  Very useful for knowing if that change would be expected to
-break that test.  Profiler to test your code for performance.  Both
-essential tools!
-
-=end
-
-=head3 Other Testing Modules
+=head2 Other Testing Modules
 
 X<Test::Builder>
 X<testing; modules>
@@ -348,6 +337,14 @@ latter module manages the test plan and coordinates the test output into TAP.
 This design allows multiple test modules to share the same C<Test::Builder>
 backend.  Consequently, the CPAN has hundreds of test modules available--and
 they can all work together in the same program.
+
+X<Test::Exception>
+X<Test::MockObject>
+X<Test::MockModule>
+X<Test::WWW::Mechanize>
+X<Test::Database>
+X<Test::Class>
+X<Devel::Cover>
 
 =over 4
 
@@ -368,6 +365,11 @@ You can inherit from test classes just as your code classes inherit from each
 other.  This is an excellent way to reduce duplication in test suites.  See the
 C<Test::Class> series written by Curtis Poe at
 U<http://www.modernperlbooks.com/mt/2009/03/organizing-test-suites-with-testclass.html>.
+
+=item * C<Devel::Cover> analyzes the execution of your test suite to report on
+the amount of your code your tests actually exercises.  In general, the more
+coverage the better--though 100% coverage is not always possible, 95% is far
+better than 80%.
 
 =back
 

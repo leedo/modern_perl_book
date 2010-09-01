@@ -1,4 +1,4 @@
-=head2 Exceptions
+=head1 Exceptions
 
 Z<exceptions>
 
@@ -16,7 +16,7 @@ debugging.  Perl 5 handles exceptional conditions through the use of
 I<exceptions>: a dynamically-scoped form of control flow that lets you handle
 errors in the most appropriate place.
 
-=head3 Throwing Exceptions
+=head2 Throwing Exceptions
 
 Z<throwing_exceptions>
 
@@ -56,18 +56,18 @@ dynamic scoping of C<local> symbols (L<dynamic_scope>).
 
 =end sidebar
 
-=head3 Catching Exceptions
+=head2 Catching Exceptions
 
 Z<catching_exceptions>
 
 X<exceptions; catching>
 
 Uncaught exceptions eventually terminate the program.  Sometimes this is
-useful; a system administration program run from cron might throw an exception
-when the error logs have filled; this could page an administrator that
-something has gone wrong.  Yet many other exceptions should not be fatal; good
-programs can recover from them, or at least save their state and exit more
-cleanly.
+useful; a system administration program run from cron (a Unix jobs scheduler)
+might throw an exception when the error logs have filled; this could page an
+administrator that something has gone wrong.  Yet many other exceptions should
+not be fatal; good programs can recover from them, or at least save their
+state and exit more cleanly.
 
 X<keywords; eval>
 X<keywords; eval block>
@@ -157,7 +157,7 @@ to be 95% strings and 5% objects.
 As an alternative to writing your own exception system, see the CPAN
 distribution C<Exception::Class>.
 
-=head3 Exception Caveats
+=head2 Exception Caveats
 
 Z<exception_caveats>
 
@@ -195,7 +195,7 @@ understand, and very easy to use:
 Not only is the syntax somewhat nicer than the Perl 5 default, but the module
 handles all of those edge cases for you without your knowledge.
 
-=head3 Built-in Exceptions
+=head2 Built-in Exceptions
 
 Z<builtin_exceptions>
 
@@ -204,16 +204,8 @@ X<exceptions; core>
 Perl 5 has several exceptional conditions you can catch with an C<eval> block.
 C<perldoc perldiag> lists them as "trappable fatal errors".  Most are syntax
 errors thrown during compilation.  Others are runtime errors.  Some of these
-may be worth catching; syntax errors rarely are.
-
-=for author
-
-What's that list?  The exhaustive exception list?  The ones
-worth catching?  The most interesting ones?
-
-A list header and/or some reordering could help.
-
-=end
+may be worth catching; syntax errors rarely are.  The most interesting or
+likely exceptions occur for:
 
 =over 4
 
@@ -225,11 +217,12 @@ A list header and/or some reordering could help.
 
 =item * Failing to find a method of the given name on the invocant
 
-=item * Perl encountered a tainting violation (L<taint>)
+=item * Using a tainted value in an unsafe fashion (L<taint>)
 
 =item * Modifying a read-only value
 
-=item * Performing the wrong operation on the wrong type of reference (L<references>)
+=item * Performing the wrong operation on the wrong type of reference
+(L<references>)
 
 =back
 

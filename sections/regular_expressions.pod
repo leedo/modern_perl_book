@@ -1,6 +1,6 @@
 Z<regular_expressions>
 
-=head2 Literals
+=head1 Literals
 
 The simplest regexes are simple substring patterns:
 
@@ -30,10 +30,10 @@ the regex: an indivisible unit of the pattern.  The regex binding operator
 on its right to the string produced by the expression on its left.  When
 evaluated in scalar context, a match evaluates to a true value if it succeeds.
 
-The negated form of the binding operator (C<!~>) evaluates to false if the match
-succeeds.
+The negated form of the binding operator (C<!~>) evaluates to a false value if
+the match succeeds.
 
-=head2 The qr// Operator and Regex Combinations
+=head1 The qr// Operator and Regex Combinations
 
 X<operators; qr//>
 X<regular expressions; qr//>
@@ -71,7 +71,7 @@ You may interpolate and combine them into larger and more complex patterns:
 
 =end programlisting
 
-=head2 Quantifiers
+=head1 Quantifiers
 
 X<regular expressions; quantifiers>
 X<operators; index>
@@ -190,133 +190,7 @@ more than I<m> times:
 
 =end programlisting
 
-=head2 Metacharacters
-
-X<regular expressions; metacharacters>
-X<regular expressions; .>
-
-Regular expressions get more powerful as atoms get more general.  For example,
-the C<.> character in a regular expression means "match any character except a
-newline".  If you wanted to search a list of dictionary words for every word
-which might match 7 Down ("Rich soil") in a crossword puzzle, you might write:
-
-=begin programlisting
-
-    for my $word (@words)
-    {
-        next unless $word =~ /lB<..>m/;
-        say "Possibility: $word";
-    }
-
-=end programlisting
-
-X<regular expressions; \w>
-
-Of course, if your list of potential matches were anything other than a list of
-words, this metacharacter could cause false positives, as it also matches
-punctuation characters, whitespace, numbers, and many other characters besides
-word characters.  The C<\w> metacharacter represents all alphanumeric
-characters and the underscore:
-
-=begin programlisting
-
-        next unless $word =~ B</lB<\w\w>m/>;
-
-=end programlisting
-
-X<regular expressions; \d>
-
-Use the C<\d> metacharacter to match digits:
-
-=begin programlisting
-
-    # not a robust phone number matcher
-    next unless $potential_phone_number =~ /B<\d>{3}-B<\d>{3}-B<\d>{4}/;
-    say "I have your number: $potential_phone_number";
-
-=end programlisting
-
-X<regular expressions; \s>
-
-Use the C<\s> metacharacter to match whitespace, whether a literal space, a tab
-character, a carriage return, a form-feed, or a newline:
-
-=begin programlisting
-
-    my $two_three_letter_words = qr/\w{3}B<\s>\w{3}/;
-
-=end programlisting
-
-X<regular expressions; \W>
-X<regular expressions; \D>
-X<regular expressions; \S>
-
-These three metacharacters have negated forms.  To match any character
-I<except> a word character, use C<\W>.  To match a non-digit character, use
-C<\D>.  To match anything but a space, use C<\S>.
-
-=head2 Character Classes
-
-X<character classes>
-
-If the range of allowed characters in these four groups isn't specific enough,
-you can specify your own I<character classes> by enclosing them in square
-brackets:
-
-=begin programlisting
-
-    my $vowels    = qr/B<[>aeiouB<]>/;
-    my $maybe_cat = qr/c${vowels}t/;
-
-=end programlisting
-
-=begin sidebar
-
-The curly braces around the name of the scalar variable C<$vowels> helps
-disambiguate the variable name.  Without that, the parser would interpret the
-variable name as C<$vowelst>, which either causes a compile-time error about an
-unknown variable or interpolates the contents of an existing C<$vowelst> into
-the regex.
-
-=end sidebar
-
-If the characters in your character set form a contiguous range, you can use
-the hyphen character (C<->) as a shortcut to express that range.
-
-=begin programlisting
-
-    my $letters_only = qr/[a-zA-Z]/;
-
-=end programlisting
-
-Move the hyphen character to the start of the class to include it in the class:
-
-=begin programlisting
-
-    my $interesting_punctuation = qr/[-!?]/;
-
-=end programlisting
-
-Just as the word and digit class metacharacters (C<\w> and C<\d>) have
-negations, so too you can negate a character class.  Use the caret (C<^>) as
-the first element of the character class to mean "anything I<except> these
-characters":
-
-=begin programlisting
-
-    my $not_a_vowel = qr/[^aeiou]/;
-
-=end programlisting
-
-=begin sidebar
-
-As you might expect, use a caret anywhere but this position to make it a member
-of the character class.  A dash in a negated character class must I<follow> the
-negating carat.
-
-=end sidebar
-
-=head2 Greediness
+=head1 Greediness
 
 X<greedy quantifiers>
 X<quantifiers; greedy>
@@ -443,7 +317,144 @@ better.  If you find yourself writing a lot of regular expression with greedy
 matches, test them thoroughly with a comprehensive and automated test suite
 with representative data to lessen the possibility of unpleasant surprises.
 
-=head2 Capturing
+=head1 Metacharacters
+
+X<regular expressions; metacharacters>
+X<regular expressions; .>
+
+Regular expressions get more powerful as atoms get more general.  For example,
+the C<.> character in a regular expression means "match any character except a
+newline".  If you wanted to search a list of dictionary words for every word
+which might match 7 Down ("Rich soil") in a crossword puzzle, you might write:
+
+=begin programlisting
+
+    for my $word (@words)
+    {
+        next unless length( $word ) == 4;
+        next unless $word =~ /lB<..>m/;
+        say "Possibility: $word";
+    }
+
+=end programlisting
+
+X<regular expressions; \w>
+
+Of course, if your list of potential matches were anything other than a list of
+words, this metacharacter could cause false positives, as it also matches
+punctuation characters, whitespace, numbers, and many other characters besides
+word characters.  The C<\w> metacharacter represents all alphanumeric
+characters (in a Unicode sense -- L<unicode>) and the underscore:
+
+=begin programlisting
+
+        next unless $word =~ B</lB<\w\w>m/>;
+
+=end programlisting
+
+X<regular expressions; \d>
+
+The C<\d> metacharacter matches digits--not just 0-9 as you expect, but any
+Unicode digit:
+
+=begin programlisting
+
+    # not a robust phone number matcher
+    next unless $potential_phone_number =~ /B<\d>{3}-B<\d>{3}-B<\d>{4}/;
+    say "I have your number: $potential_phone_number";
+
+=end programlisting
+
+X<regular expressions; \s>
+
+Use the C<\s> metacharacter to match whitespace, whether a literal space, a tab
+character, a carriage return, a form-feed, or a newline:
+
+=begin programlisting
+
+    my $two_three_letter_words = qr/\w{3}B<\s>\w{3}/;
+
+=end programlisting
+
+X<regular expressions; \W>
+X<regular expressions; \D>
+X<regular expressions; \S>
+
+These three metacharacters have negated forms.  To match any character
+I<except> a word character, use C<\W>.  To match a non-digit character, use
+C<\D>.  To match anything but whitespace, use C<\S>.
+
+=head1 Character Classes
+
+X<character classes>
+
+If the range of allowed characters in these four groups isn't specific enough,
+you can specify your own I<character classes> by enclosing them in square
+brackets:
+
+=begin programlisting
+
+    my $vowels    = qr/B<[>aeiouB<]>/;
+    my $maybe_cat = qr/c${vowels}t/;
+
+=end programlisting
+
+=begin sidebar
+
+The curly braces around the name of the scalar variable C<$vowels> helps
+disambiguate the variable name.  Without that, the parser would interpret the
+variable name as C<$vowelst>, which either causes a compile-time error about an
+unknown variable or interpolates the contents of an existing C<$vowelst> into
+the regex.
+
+=end sidebar
+
+If the characters in your character set form a contiguous range, you can use
+the hyphen character (C<->) as a shortcut to express that range.
+
+=begin programlisting
+
+    my $letters_only = qr/[a-zA-Z]/;
+
+=end programlisting
+
+Move the hyphen character to the start or end of the class to include it in the
+class:
+
+=begin programlisting
+
+    my $interesting_punctuation = qr/[-!?]/;
+
+=end programlisting
+
+... or escape it:
+
+=begin programlisting
+
+    my $line_characters = qr/[|=\-_]/;
+
+=end programlisting
+
+Just as the word and digit class metacharacters (C<\w> and C<\d>) have
+negations, so too you can negate a character class.  Use the caret (C<^>) as
+the first element of the character class to mean "anything I<except> these
+characters":
+
+=begin programlisting
+
+    my $not_a_vowel = qr/[^aeiou]/;
+
+=end programlisting
+
+=begin sidebar
+
+Use a caret anywhere but this position to make it a member of the character
+class.  To include a hyphen in a negated character class, place it after the
+caret or at the end of the class, or escape it.
+
+=end sidebar
+
+=head1 Capturing
 
 It's often useful to match part of a string and use it later; perhaps you want
 to extract an address or an American telephone number from a string:
@@ -463,7 +474,7 @@ them.
 
 =end sidebar
 
-=head3 Named Captures
+=head2 Named Captures
 
 Z<named_captures>
 X<captures>
@@ -484,7 +495,7 @@ variable with I<named captures>:
 =end programlisting
 
 The capturing construct can look like a big wad of punctuation, but it's fairly
-simple when you can recognize as a single chunk:
+simple when you can recognize it as a single chunk:
 
 =begin programlisting
 
@@ -496,8 +507,8 @@ The parentheses enclose the entire capture.  The C<< ?< name > >> construct
 must follow the left parenthesis.  It provides a name for the capture buffer.
 The rest of the construct within the parentheses is a regular expression.  If
 and when the regex matches this fragment, Perl stores the captured portion of
-the string in the special variable C<%+>: a hash where the key is the name of
-the capture buffer and the value is the portion of the string which matched the
+the string in the magic variable C<%+>: a hash where the key is the name of the
+capture buffer and the value is the portion of the string which matched the
 buffer's regex.
 
 Parentheses are special to Perl 5 regular expressions; by default they perform
@@ -506,7 +517,7 @@ enclose one or more atoms to capture whatever portion of the matched string
 they match.  To use literal parentheses in a regular expression, you must
 preface them with a backslash, just as in the C<$area_code> variable.
 
-=head3 Anonymous Captures
+=head2 Anonymous Captures
 
 X<anonymous captures>
 X<captures; anonymous>
@@ -524,7 +535,7 @@ years.  You may encounter I<anonymous captures> as well:
 =end programlisting
 
 The parentheses enclose the fragment to capture, but there is no regex
-directive giving the I<name> of the capture.  Instead, Perl stores the captured
+metacharacter giving the I<name> of the capture.  Instead, Perl stores the captured
 substring in a series of magic variables starting with C<$1> and continuing for
 as many capture groups are present in the regex.  The I<first> matching capture
 that Perl finds goes into C<$1>, the second into C<$2>, and so on.  Capture
@@ -546,7 +557,20 @@ use of captures in regex fragments; save it for top-level regexes.
 
 =end sidebar
 
-=head2 Grouping and Alternation
+Anonymous captures are less frustrating when you evaluate a match in list context:
+
+=begin programlisting
+
+    if (my ($number) = $contact_info =~ /($phone_number)/)
+    {
+        say "Found a number $number";
+    }
+
+=end programlisting
+
+Perl will assign to the lvalues in order of the captures.
+
+=head1 Grouping and Alternation
 
 Previous examples have all applied quantifiers to simple atoms.  They can also
 apply to more complex subpatterns as a whole:
@@ -638,7 +662,7 @@ C<(?-xism:rice|beans)>.
 
 =end sidebar
 
-=head2 Other Escape Sequences
+=head1 Other Escape Sequences
 
 X<regex metacharacters>
 X<metacharacters; regex>
@@ -651,7 +675,7 @@ capture pattern fragments.
 X<escape>
 X<metacharacters; escaping>
 
-To a I<literal> instance of a metacharacter, I<escape> it with a backslash
+To match a I<literal> instance of a metacharacter, I<escape> it with a backslash
 (C<\>).  Thus C<\(> refers to a single left parenthesis and C<\]> refers to a
 single right square bracket.  C<\.> refers to a literal period character
 instead of the "match anything but an explicit newline character" atom.
@@ -689,7 +713,7 @@ effective denial-of-service attack against your program.
 
 =end note
 
-=head2 Assertions
+=head1 Assertions
 
 X<regex assertions>
 
@@ -760,7 +784,7 @@ Because the assertion is zero-width, it consumes none of the source string.
 Thus the anchored C<.*\Z> pattern fragment must be present; otherwise the
 capture would only capture the C<cat> portion of the source string.
 
-=head2 Regex Modifiers
+=head1 Regex Modifiers
 
 X<regex modifiers>
 X<regular expressions; modifiers>
@@ -807,15 +831,8 @@ You may also disable specific modifiers by preceding them with C<->:
 X</m>
 X<regular expressions; multiline>
 
-=for author
-
-How do I rephrase this paragraph?
-
-=end for
-
-Other modifiers include C</m>, the multiline operator.  When this is active,
-the C<^> and C<$> anchors match at any start of line or end of line within the
-string, depending on your newline settings.
+The multiline operator, C</m>, allows the C<^> and C<$> anchors match at any
+start of line or end of line within the string.
 
 X</s>
 X<regular expressions; single line>

@@ -1,4 +1,4 @@
-=head2 Handling Warnings
+=head1 Handling Warnings
 
 Z<handling_warnings>
 
@@ -7,18 +7,68 @@ situations.  Even though you should almost always enable warnings
 unconditionally, certain circumstances dictate prudence in disabling certain
 warnings--and Perl supports this.
 
-=head3 Producing Warnings
+=head2 Producing Warnings
 
-=for author
+Z<producing_warnings>
 
-warn
-Carp carp() and cluck()
-do they work with $SIG{__WARN__}?  Must verify.
-perl -MCarp=verbose
+X<keywords; warn>
+X<warn>
 
-=end for
+Use the C<warn> keyword to emit a warning:
 
-=head3 Enabling and Disabling Warnings
+=begin programlisting
+
+    warn 'Something went wrong!';
+
+=end programlisting
+
+C<warn> prints a list of values to the STDERR filehandle (L<filehandle>).  Perl
+will append the filename and line number on which the C<warn> call occurred
+unless the last element of the list ends in a newline.
+
+X<Carp>
+X<Carp; carp()>
+X<Carp; cluck()>
+X<Carp; croak()>
+X<Carp; confess()>
+
+The core C<Carp> module offers other mechanisms to produce warnings.  Its
+C<carp()> function reports a warning from the perspective of the calling code.
+That is, you could check the arity of a function (L<arity>) with:
+
+=begin programlisting
+
+    use Carp;
+
+    sub only_two_arguments
+    {
+        my ($lop, $rop) = @_;
+        Carp::carp( 'Too many arguments provided' ) if @_ > 2;
+        ...
+    }
+
+=end programlisting
+
+... and anyone who reads the error message will receive the filename and line
+number of the I<calling> code, not C<only_two_arguments()>.  Similarly,
+C<Carp>'s C<cluck()> produces an entire backtrace of all function points up to
+its call.
+
+X<Carp; verbose>
+
+To track down weird warnings or exceptions throughout your system, enable
+C<Carp>'s verbose mode throughout the entire program:
+
+=begin programlisting
+
+    $ perl -MCarp=verbose my_prog.pl
+
+=end programlisting
+
+This changes all C<croak()> calls to produce C<confess()>'s behavior and all
+C<carp()> calls to C<cluck()>'s behavior.
+
+=head2 Enabling and Disabling Warnings
 
 X<-w>
 X<command-line arguments; -w>
@@ -60,7 +110,7 @@ Code written before the C<warnings> pragma (Perl 5.6.0 in spring 2000) may
 C<local>ize C<$^W> to suppress certain warnings within a given scope.  New code
 should use the pragma instead.
 
-=head3 Disabling Warning Categories
+=head2 Disabling Warning Categories
 
 To disable selective warnings within a scope, use C<no warnings;> with an
 argument list.  Omitting the argument list disables all warnings within that
@@ -83,7 +133,7 @@ string-processing code which concatenates values from many sources.  Careful
 initialization of variables can avoid the need to disable the warning, but
 local style and concision may render this warning moot.
 
-=head3 Making Warnings Fatal
+=head2 Making Warnings Fatal
 
 Z<fatal_warnings>
 X<warnings; fatal>
@@ -106,7 +156,7 @@ deprecated constructs:
 
 =end programlisting
 
-=head3 Catching Warnings
+=head2 Catching Warnings
 
 X<signal handlers; __WARN__>
 X<__WARN__>
@@ -137,7 +187,13 @@ lexically--but it can come to good use in test modules such as
 C<Test::Warnings> from the CPAN, where the actual text of the warning is
 important.
 
-=head3 Registering Your Own Warnings
+=begin sidebar
+
+C<perldoc perlvar> discusses C<%SIG> in more detail.
+
+=end sidebar
+
+=head2 Registering Your Own Warnings
 
 Z<registering_warnings>
 

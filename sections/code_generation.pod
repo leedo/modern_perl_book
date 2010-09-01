@@ -1,4 +1,4 @@
-=head2 Code Generation
+=head1 Code Generation
 
 Z<code_generation>
 
@@ -27,7 +27,7 @@ The C<AUTOLOAD> technique (L<autoload>) for missing functions and methods
 demonstrates this technique in a constrained form; Perl 5's function and method
 dispatch system allows you to customize what happens when normal lookup fails.
 
-=head3 eval
+=head2 eval
 
 X<eval string>
 X<operators; eval>
@@ -94,7 +94,7 @@ free, either--cheaper than performing IO, perhaps, but not free.
 
 Even so, this technique is simple and reasonably easy to understand.
 
-=head3 Parametric Closures
+=head2 Parametric Closures
 
 X<closures; parametric>
 
@@ -199,7 +199,7 @@ warning unless you explicitly suppress it within the scope.
 
 =end sidebar
 
-=head3 Compile-time Manipulation
+=head2 Compile-time Manipulation
 
 Unlike code written explicitly as code, code generated through C<eval> string
 gets compiled at runtime.  Where you might expect a normal function to be
@@ -285,7 +285,7 @@ a subtle bug:
 string value to C<$wanted_package> occurs.  The result will be an exception
 from attempting to invoke the C<require()> method on the undefined value.
 
-=head3 Class::MOP
+=head2 Class::MOP
 
 Z<class_mop>
 
@@ -319,20 +319,49 @@ To create a class:
 X<metaclass>
 X<OO; metaclass>
 
-You can add methods and attributes to this class when you create it, and you
-can perform introspection on the class with the I<metaclass> (the object which
-represents that class) returned from the C<create()> constructor.  Similarly
-you can create and manipulate and introspect attributes and methods with
-C<Class::MOP::Attribute> and C<Class::MOP::Method>.
+You can add attributes and methods to this class when you create it:
 
-=for author
+=begin programlisting
 
-Does this need more of an example?
+    use Class::MOP;
 
-Ideas: applying roles to object instances (which is basically
-generating code), generating classes from a database schema or XML
-Schema structure, ... not all of these with concrete examples yet.
-But metaprogramming is very cool :-).  Perhaps worth noting that it is
-this very flexibility that has allowed Moose itself to be written.
+    my $class = Class::MOP::Class->create(
+        'Monkey::Wrench' =>
+        (
+            attributes =>
+            [
+                Class::MOP::Attribute->new( '$material' ),
+                Class::MOP::Attribute->new( '$color' ),
+            ]
+            methods =>
+            {
+                tighten => sub { ... },
+                loosen  => sub { ... },
+            }
+        ),
+    );
 
-=end for
+=end programlisting
+
+... or add them to the I<metaclass> (the object which represents that class)
+after you've created it:
+
+=begin programlisting
+
+    $class->add_attribute( experience  => Class::MOP::Attribute->new( '$xp' ) );
+    $class->add_method(    bash_zombie => sub { ... } );
+
+=end programlisting
+
+... and you can perform introspection on the metaclass:
+
+=begin programlisting
+
+    my @attrs = $class->get_all_attributes();
+    my @meths = $class->get_all_methods();
+
+=end programlisting
+
+You can similarly create and manipulate and introspect attributes and methods
+with C<Class::MOP::Attribute> and C<Class::MOP::Method>.  This metaobject
+protocol and the flexibility it affords powers Moose (L<moose>).

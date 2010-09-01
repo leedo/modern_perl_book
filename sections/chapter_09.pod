@@ -1,4 +1,4 @@
-=head1 Writing Real Programs
+=head0 Writing Real Programs
 
 Z<writing_real_programs>
 
@@ -13,6 +13,8 @@ all of this in a concise, clear, and maintainable fashion.  Fortunately, modern
 Perl provides many tools and techniques to write real programs.
 
 L<testing>
+
+L<files>
 
 L<exceptions>
 
