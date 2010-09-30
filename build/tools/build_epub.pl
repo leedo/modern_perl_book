@@ -106,7 +106,7 @@ sub get_output_fh
     $name =~ s/\.pod/\.xhtml/;
     $name = catfile($xhtmldir, $name);
 
-    open my $fh, '>', $name
+    open my $fh, '>:utf8', $name
       or die "Cannot write to '$name': $!\n";
 
     return $fh;
@@ -238,7 +238,7 @@ sub add_cover
     }
 
     # Add cover metadata for iBooks.
-    my $cover_id = $epub->copy_image($cover_image, 'images/cover.jpg');
+    my $cover_id = $epub->copy_image($cover_image, 'images/cover.png');
     $epub->add_meta_item('cover', $cover_id);
 
     # Add an additional cover page for other eBook readers.
@@ -255,13 +255,13 @@ sub add_cover
       . qq[<style type="text/css"> img { max-width: 100%; }</style>\n]
       . qq[</head>\n]
       . qq[<body>\n]
-      . qq[    <img alt="" src="../images/cover.jpg" />\n]
+      . qq[    <img alt="Modern Perl" src="../images/cover.png" />\n]
       . qq[</body>\n]
       . qq[</html>\n\n];
 
     # Crete a the cover xhtml file.
     my $cover_filename = './build/xhtml/cover.xhtml';
-    open my $cover_fh, '>', $cover_filename
+    open my $cover_fh, '>:utf8', $cover_filename
       or die "Cannot write to '$cover_filename': $!\n";
 
     print $cover_fh $cover_xhtml;

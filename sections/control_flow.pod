@@ -51,9 +51,8 @@ multiple expressions into a single unit:
 
 =end programlisting
 
-Note that the postfix form does not I<require> parentheses around its
-condition, while the block form does.  The conditional expression may also be
-complex:
+While the block form requires parentheses around its condition, the postfix
+form does not.  The conditional expression may also be complex:
 
 =begin programlisting
 
@@ -216,7 +215,9 @@ may not change the order in which the block types appear:
 You may also use the C<elsif> block with an C<unless> chain, but the resulting
 code may be unclear.  There is no C<elseunless>.
 
-There is no C<else if> construct; this is a syntax error:
+There is no C<else if> constructN<Larry prefers C<elsif> for aesthetic reasons,
+as well the prior art of the Ada programming language.>, so this code contains
+a syntax error:
 
 =begin programlisting
 
@@ -281,8 +282,13 @@ subsequent subexpressions.  This is most obvious with an example:
 
 =begin programlisting
 
+    # see preface
+    use Test::More 'no_plan';
+
     say "Both true!" if ok(1, 'first subexpression')
                      && ok(1, 'second subexpression');
+
+    done_testing();
 
 =end programlisting
 
@@ -400,12 +406,12 @@ Z<looping_directives>
 
 Perl also provides several directives for looping and iteration.
 
-C<foreach>
-C<for>
-C<looping directives; for>
-C<looping directives; foreach>
+X<foreach>
+X<for>
+X<looping directives; for>
+X<looping directives; foreach>
 
-The I<foreach> style loop evaluates an expression which produces a list and
+The I<foreach>-style loop evaluates an expression which produces a list and
 executes a statement or block until it has consumed that list:
 
 =begin programlisting
@@ -417,16 +423,18 @@ executes a statement or block until it has consumed that list:
 
 =end programlisting
 
-This example uses the C<range> operator to produce a list of integers from one
-to ten inclusive.  The C<foreach> directive loops over them, setting the topic
-variable (C<$_>) to each in turn.  Perl executes the block for each integer and
-prints the squares of the integers.
+This example uses the range operator to produce a list of integers from one to
+ten inclusive.  The C<foreach> directive loops over them, setting the topic
+variable (C<$_>; see L<default_scalar_variable>) to each in turn.  Perl
+executes the block for each integer and prints the squares of the integers.
 
 =begin sidebar
 
-Though this is a I<foreach>-style loop, Perl treats the keywords C<foreach> and
-C<for> interchangeably.  As only the I<type> of the loop governs its behavior,
-there are no drawbacks to using the shorter C<for> keyword.
+Perl treats the keywords C<foreach> and C<for> interchangeably.  The remainder
+of the syntax of the loop determines the behavior of the loop.  Though
+experienced Perl programmers tend to refer to the loop with automatic iteration
+as a C<foreach> loop, you can use C<for> safely and clearly any place you might
+want to use C<foreach>.
 
 =end sidebar
 
@@ -537,7 +545,11 @@ You cannot use aliasing to modify I<constant> values, however:
 
 =begin programlisting
 
-    lc for qw( Huey Dewey Louie );
+    for (qw( Huex Dewex Louie ))
+    {
+        $_++;
+        say;
+    }
 
 =end programlisting
 
@@ -1182,8 +1194,8 @@ C<log_and_greet_person()>.  Returning directly from C<greet_person()> to the
 caller of C<log_and_greet_person()> is an optimization known as I<tailcall
 optimization>.
 
-Perl 5 cannot perform this optimization automatically, but you can perform it
-manually.
+Perl 5 will not detect cases where it could perform this optimization
+automatically.
 
 =begin sidebar
 

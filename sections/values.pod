@@ -25,14 +25,13 @@ meaningless if they couldn't accurately contain the data itself--the values.
 X<strings>
 
 A I<string> is a piece of data with no particular formatting, no particular
-contents, and no semantic meaning beyond the fact that it's a string.  It could
-be your name.  It could be the contents of an image file read from your hard
-drive.  It could be the Perl program itself.  A string has no meaning to the
-program until you give it meaning.  A string is a fixed amount of data
-delineated by quotes of some form, yet Perl strings can grow or shrink as you
-add to or remove from them.
+contents, and no other meaning to the program.  It could be your name.  It
+could be the contents of an image file read from your hard drive.  It could be
+the Perl program itself.  A string has no meaning to the program until you give
+it meaning.  A string is a fixed amount of data delineated by quotes of some
+form, yet Perl strings can grow or shrink as you add to or remove from them.
 
-Most strings use either single or double quotes:
+The most common string delimiters are single and double quotes:
 
 =begin programlisting
 
@@ -59,7 +58,7 @@ single quote:
 
 =begin programlisting
 
-    my $exception = 'This string ends with a backslash, not a quote: \\';
+    my $exception = 'This string ends with a backslash, not a quote: B<\\>';
 
 =end programlisting
 
@@ -70,7 +69,7 @@ next to each other, the first one will escape the the second one.
 
 =begin programlisting
 
-    is('Modern \ Perl', 'Modern \\ Perl', 'single quotes backslash escaping');
+    is('Modern B<\> Perl', 'Modern B<\\> Perl', 'single quotes backslash escaping');
 
 =end programlisting
 
@@ -112,16 +111,24 @@ X<interpolation>
 X<strings; interpolation>
 
 You may also I<interpolate> the value of a scalar variable or the values of an
-array within a double-quoted string directly:
+array within a double-quoted string, such that the contents of the variable
+become part of the string as if you'd performed a concatenation operation
+directly:
 
 =begin programlisting
 
     my $factoid = "Did you know that B<$name> lives at B<$address>?";
 
+    # equivalent to
+
+    my $factoid = 'Did you know that ' . $name . ' lives at ' . $address . '?';
+
 =end programlisting
 
+X<escaping>
+
 You may include a literal double-quote inside a double-quoted string by
-escaping it with a leading backslash:
+I<escaping> it (that is, preceding it with a leading backslash):
 
 =begin programlisting
 
@@ -236,10 +243,21 @@ unique number which identifies it in the Unicode character set.
 
 =item Sequences of octets
 
-Binary data is a sequence of 8 bit numbers, each of which can represent a
-number between 0 and 255.
+X<octet>
+
+Binary data is a sequence of I<octets>--8 bit numbers, each of which can
+represent a number between 0 and 255.
 
 =back
+
+=begin sidebar
+
+Why I<octet> and not I<byte>?  Think of Unicode as characters without thinking
+of any particular size of the representation of those characters in memory.
+Assuming that one character fits in one byte will cause you no end of Unicode
+grief.
+
+=end sidebar
 
 Unicode strings and binary strings look very similar.  They each have a
 C<length()>, and you can perform standard string operations on them such as
@@ -276,12 +294,12 @@ outputs of your program, you will avoid many problems.
 X<open>
 X<IO layers>
 
-One source of Unicode input is filehandles.  If you tell Perl that a specific
-filehandle works with encoded text, Perl can convert the data to Unicode
-strings automatically.  To do this, add a IO layer to the mode of the C<open>
-builtin.  An I<IO layer> wraps around input or output and performs some sort of
-conversion of the data.  In this case, the C<:utf8> layer performs decoding of
-UTF-8 data:
+One source of Unicode input is filehandles (L<files>).  If you tell Perl that a
+specific filehandle works with encoded text, Perl can convert the data to
+Unicode strings automatically.  To do this, add a IO layer to the mode of the
+C<open> builtin.  An I<IO layer> wraps around input or output and performs some
+sort of conversion of the data.  In this case, the C<:utf8> layer performs
+decoding of UTF-8 data:
 
 =begin programlisting
 
@@ -296,17 +314,13 @@ UTF-8 data:
 X<binmode>
 X<builtins; binmode>
 
-You may also modify an existing filehandle with C<binmode>:
+You may also modify an existing filehandle with C<binmode>, whether for input
+or output:
 
 =begin programlisting
 
     binmode $fh, ':utf8';
-
-=end programlisting
-
-This works for input as well as output:
-
-=begin programlisting
+    my $unicode_string = <$fh>;
 
     binmode STDOUT, ':utf8';
     say $unicode_string;
@@ -381,7 +395,7 @@ character's Unicode number within the curly brackets:
 
 =begin sidebar
 
-Note that these escapes interpolate only within double-quoted strings.
+These escapes interpolate only within double-quoted strings.
 
 =end sidebar
 
@@ -488,7 +502,7 @@ The string literal contains octets.
 =begin programlisting
 
     use utf8;
-    my $hello = "E<#x5E9>E<#x5DC>E<#x5D5>E<#x5DD>, ";
+    my $hello = "KuirabE<aacute>, ";
 
 =end programlisting
 
@@ -556,8 +570,8 @@ C<perldoc perlnumber> for more details.
 
 You may not use commas to separate thousands in numeric literals because the
 parser will interpret the commas as comma operators.  You I<can> use
-underscores in other places within the number, however.  The parser will treat
-them as invisible characters.  Your readers may not.  These are equivalent:
+underscores within the number, however.  The parser will treat them as
+invisible characters; your readers may not.  These are equivalent:
 
 =begin programlisting
 
@@ -631,7 +645,7 @@ When used on the right-hand side of an assignment, the C<()> construct
 represents an empty list.  When evaluated in scalar context, this evaluates to
 C<undef>.  In list context, it is effectively an empty list.
 
-When used on the left-hand side of an assignment, the C<()> construct enforces
+When used on the left-hand side of an assignment, the C<()> construct imposes
 list context.  To count the number of elements returned from an expression in
 list context without using a temporary variable, you use the idiom (L<idioms>):
 
@@ -685,9 +699,9 @@ Lists may occur verbatim in source code as values:
 
 =end programlisting
 
-Note that you do not need parentheses to I<create> lists; where present, the
-parentheses in these examples group expressions to change the I<precedence> of
-those expressions (L<precedence>).
+You do not need parentheses to I<create> lists; the comma operator creates
+lists.  Where present, the parentheses in these examples group expressions to
+change the I<precedence> of those expressions (L<precedence>).
 
 X<operators; range>
 X<operators; ..>
@@ -735,6 +749,9 @@ context (for a single element) or list context (for a slice):
 
 =begin programlisting
 
+    # enable say and other features (see preface)
+    use Modern::Perl;
+
     # you do not need to understand this all
     sub context
     {
@@ -751,5 +768,11 @@ context (for a single element) or list context (for a slice):
     my @list_slice  = (1, 2, 3)[context()];
     my @array_slice = @list_slice[context()];
     my $array_index = $array_slice[context()];
+
+    # say imposes list context
+    say context();
+
+    # void context is obvious
+    context()
 
 =end programlisting

@@ -236,7 +236,7 @@ of exiting the block containing the C<local>ization of C<$scope>, Perl restores
 the original value of the variable.  The final C<say> prints C<outer scope>
 once again.
 
-Note that the variable is I<visible> within all scopes, but the I<value> of the
+While the variable is I<visible> within all scopes, the I<value> of the
 variable changes depending on C<local>ization and assignment.  This feature can
 be tricky and subtle, but it is especially useful for changing the values of
 magic variables.
@@ -258,13 +258,6 @@ has a single symbol table, and every package variable has an entry in this
 table.  You can inspect and modify this symbol table from Perl; this is how
 importing works (L<importing>).  This is also why you may only C<local>ize
 global and package global variables and never lexical variables.
-
-=begin sidebar
-
-You I<can> localize functions and methods, but that's deep magic to avoid
-unless absolutely necessary.
-
-=end sidebar
 
 X<$/>
 X<magic variables; $/>
@@ -289,7 +282,7 @@ variables used other places in your code.
 
 =head2 State Scope
 
-Z<state>
+Z<state_scope>
 
 X<state>
 X<scope; state>

@@ -63,7 +63,7 @@ X<fat comma>
 If you assign an odd number of elements to the hash, you will receive a warning
 that the results are not what you anticipated.  It's often more obvious to use
 the I<fat comma> operator to associate values with keys, as it makes the
-required pairing more visible:
+required pairing more visible.  Compare:
 
 =begin programlisting
 
@@ -74,9 +74,20 @@ required pairing more visible:
 
 =end programlisting
 
+... to:
+
+=begin programlisting
+
+    my %favorite_flavors = (
+        'Jacob', 'anything',
+        'Floyd', 'Pistachio',
+    );
+
+=end programlisting
+
 The fat comma operator acts like the regular comma, but it also causes the Perl
 parser to treat the previous bareword (L<barewords>) as if it were a quoted
-word.  The C<strict> pragma will not warn about the bare word, and if you have
+word.  The C<strict> pragma will not warn about the bareword, and if you have
 a function with the same name as a hash key, the fat comma will I<not> call the
 function:
 
@@ -236,8 +247,18 @@ contains the given key:
 Using C<exists> instead of accessing the hash key directly avoids two problems.
 First, it does not check the boolean nature of the hash I<value>; a hash key
 may exist with a value even if that value evaluates to a boolean false
-(including C<undef>). Second, with nested data structures, it avoids
-autovivifying (L<autovivification>) the value.
+(including C<undef>):
+
+=begin programlisting
+
+    my  %false_key_value = ( 0 => '' );
+    ok( %false_key_value,
+         'hash containing false key & value should evaluate to a true value' );
+
+=end programlisting
+
+Second, with nested data structures, C<exists> avoids autovivifying
+(L<autovivification>) the value.
 
 X<defined>
 X<operators; defined>
@@ -275,13 +296,6 @@ keys of the hash:
 
 =end programlisting
 
-=begin sidebar
-
-You may assign a numeric value to C<keys> to modify the expected size of the
-hash.  This is a minor optimization you almost never need.
-
-=end sidebar
-
 X<values>
 X<hashes; values>
 X<operators; values>
@@ -312,13 +326,6 @@ value:
     }
 
 =end programlisting
-
-=begin sidebar
-
-The C<while> loop is important to the C<each> example, as you cannot declare
-multiple lexical loop iterator variables in a C<for> loop.
-
-=end sidebar
 
 Unlike arrays, there is no obvious ordering to the list of keys or values.  The
 ordering depends on the internal implementation of the hash, which can depend
@@ -393,9 +400,9 @@ You may retrieve multiple values from a hash with a slice:
 
 =end programlisting
 
-Note that, as with array slices, the sigil of the hash changes to indicate list
-context.  You can still tell that C<%addresses> is a hash by the use of the
-curly braces to indicate keyed access.
+As with array slices, the sigil of the hash changes to indicate list context.
+You can still tell that C<%addresses> is a hash by the use of the curly braces
+to indicate keyed access.
 
 Hash slices make it easy to merge two hashes:
 
@@ -452,9 +459,8 @@ meaningless to Perl programs.  You can safely ignore it.
 
 In list context, a hash evaluates to a list of key/value pairs similar to what
 you receive from the C<each> operator.  However, you I<cannot> iterate over
-this list the same way you can iterate over the list produced by C<each>,
-because there is no internal hash iteration provided when evaluating a hash in
-list contextN<The loop will loop forever, unless the hash is empty.>.
+this list the same way you can iterate over the list produced by C<each>, as
+the loop will loop forever, unless the hash is empty.
 
 =head2 Hash Idioms
 
@@ -497,7 +503,8 @@ a logfile:
 The initial value of a hash value is C<undef>.  The postincrement operator
 (C<++>) treats that as zero.  This in-place modification of the value
 increments an existing value for that key.  If no value exists for that key, it
-creates a value (C<undef>) and immediately increments it to one.
+creates a value (C<undef>) and immediately increments it to one, as the
+numification of undef produces the value 0.
 
 X<hashes; caching>
 X<hashes; orcish maneuver>
